@@ -42,4 +42,9 @@ class MainActivity : AppCompatActivity() {
         adapter = UsuariosAdapter(lista)
         binding.rcUsuarios.adapter = adapter
     }
+
+    override fun onResume() {
+        super.onResume()
+        setRecycler()
+    }
 }
