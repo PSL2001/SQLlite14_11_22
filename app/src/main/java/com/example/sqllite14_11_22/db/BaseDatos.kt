@@ -1,5 +1,6 @@
 package com.example.sqllite14_11_22.db
 
+import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
@@ -45,5 +46,39 @@ class BaseDatos(c: Context): SQLiteOpenHelper(c, DATABASE, null, VERSION) {
 
         //Si devuelve -1 es que hay un error, cualquier otro si ha ido bien
         return cod
+    }
+    //Ver todos los registros
+    @SuppressLint("Range")
+    fun readAll(): MutableList<Usuarios> {
+        //Creamos una mutable list
+        val lista = mutableListOf<Usuarios>()
+        val conexion = this.readableDatabase
+        //Creamos la consulta
+        val q = "SELECT * FROM $TABLA ORDER BY nombre"
+        try {
+            //Creamos un cursor, con el query anterior
+            val cursor = conexion.rawQuery(q, null)
+            //Hacemos este if para comprobar que la consulta no ha fallado
+            if (cursor.moveToFirst()) {
+                do {
+                    //Y mientras que el cursor puede ir al siguiente creamos usuarios
+                    val usuario = Usuarios(
+                        cursor.getInt(cursor.getColumnIndex("id")),
+                        cursor.getString(cursor.getColumnIndex("nombre")),
+                        cursor.getString(cursor.getColumnIndex("email"))
+                    )
+                    //Y añadimos la lista
+                    lista.add(usuario)
+                }while (cursor.moveToNext())
+            }
+            //Cerramos el cursor
+            cursor.close()
+        }catch (e: Exception) {
+            e.printStackTrace()
+        }
+        //Cerramos la conexion
+        conexion.close()
+        //Y devolvemos lista
+        return lista
     }
 }
