@@ -1,8 +1,10 @@
 package com.example.sqllite14_11_22.db
 
+import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import com.example.sqllite14_11_22.models.Usuarios
 
 
 class BaseDatos(c: Context): SQLiteOpenHelper(c, DATABASE, null, VERSION) {
@@ -25,5 +27,22 @@ class BaseDatos(c: Context): SQLiteOpenHelper(c, DATABASE, null, VERSION) {
         val q = "DROP TABLE IF EXISTS $TABLA"
         p0?.execSQL(q)
         onCreate(p0)
+    }
+
+    //CRUD (Create, Read, Update, Delete)
+
+    //Crear un registro
+    fun crear(usuario: Usuarios) : Long {
+        //WritableDatabase permite escribir en ella
+        val conexion = this.writableDatabase
+        val valores = ContentValues().apply {
+            put("NOMBRE", usuario.nombre)
+            put("EMAIL", usuario.email)
+        }
+
+        val cod = conexion.insert(TABLA, null, valores)
+        conexion.close()
+
+        return cod
     }
 }
