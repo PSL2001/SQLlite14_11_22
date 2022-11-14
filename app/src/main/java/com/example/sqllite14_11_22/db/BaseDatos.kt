@@ -43,6 +43,7 @@ class BaseDatos(c: Context): SQLiteOpenHelper(c, DATABASE, null, VERSION) {
         val cod = conexion.insert(TABLA, null, valores)
         conexion.close()
 
+        //Si devuelve -1 es que hay un error, cualquier otro si ha ido bien
         return cod
     }
 }
