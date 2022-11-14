@@ -13,10 +13,17 @@ class BaseDatos(c: Context): SQLiteOpenHelper(c, DATABASE, null, VERSION) {
     }
 
     override fun onCreate(p0: SQLiteDatabase?) {
+        val q = "CREATE TABLE $TABLA(" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "nombre TEXT NOT NULL , " +
+                "email TEXT NOT NULL UNIQUE)"
 
+        p0?.execSQL(q)
     }
 
     override fun onUpgrade(p0: SQLiteDatabase?, p1: Int, p2: Int) {
-
+        val q = "DROP TABLE IF EXISTS $TABLA"
+        p0?.execSQL(q)
+        onCreate(p0)
     }
 }
