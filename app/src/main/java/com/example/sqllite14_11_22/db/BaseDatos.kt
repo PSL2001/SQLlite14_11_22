@@ -81,4 +81,28 @@ class BaseDatos(c: Context): SQLiteOpenHelper(c, DATABASE, null, VERSION) {
         //Y devolvemos lista
         return lista
     }
+
+    //Metodo para comprobar que email es unico
+    fun existeEmail(email: String): Boolean {
+        //Creamos el query
+        val q = "SELECT id from $TABLA WHERE email ='$email'"
+        // Creamos la conexion
+        val conexion = this.readableDatabase
+        //Creamos una variable para contar las filas
+        var filas = 0
+        try {
+            //Abrimos el cursor
+            val cursor = conexion.rawQuery(q, null)
+            //Nos traemos las filas
+            filas = cursor.count
+            //Cerramos cursor
+            cursor.close()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        //Cerramos conexion
+        conexion.close()
+        //Devolvemos un boolean dependiendo si filas es distinto de 0
+        return filas != 0
+    }
 }

@@ -35,14 +35,21 @@ class AddUpdateActivity : AppCompatActivity() {
 
         if (nombre.length < 3) {
             binding.etNombre.setError("El campo nombre debe de tener al menos 3 caracteres")
+            binding.etNombre.requestFocus()
             return
         }
 
         if (email.length < 6) {
             binding.etEmail.setError("El campo email debe tener al menos 6 caracteres")
+            binding.etEmail.requestFocus()
             return
         }
         //Comprobamos que el email no esta duplicado
+        if (conexion.existeEmail(email)) {
+            binding.etEmail.setError("Este correo ya existe")
+            binding.etEmail.requestFocus()
+            return
+        }
         val usuario = Usuarios(1, nombre, email)
         if (conexion.crear(usuario) > -1) {
             finish()
