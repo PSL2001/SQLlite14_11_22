@@ -33,14 +33,29 @@ class MainActivity : AppCompatActivity() {
 
     private fun setRecycler() {
         lista = conexion.readAll()
+        binding.tvNoReg.visibility = View.INVISIBLE
         if (lista.size == 0) {
             binding.tvNoReg.visibility = View.VISIBLE
             return
         }
         val layoutmanager = LinearLayoutManager(this)
         binding.rcUsuarios.layoutManager = layoutmanager
-        adapter = UsuariosAdapter(lista)
+        //Pasamos una funcion como parametro con itirador para poder borrar los datos de ese usuario cuando
+        // el usuario pulse borrar
+        adapter = UsuariosAdapter(lista, {onItemDelete(it)})
         binding.rcUsuarios.adapter = adapter
+    }
+
+    private fun onItemDelete(position: Int) {
+        val usuario = lista[position]
+        //Borramos de la lista
+        conexion.borrar(usuario.id)
+        //Y indicamos al recycler que hemos borrado este dato de la lista
+        lista.removeAt(position)
+        if (lista.size == 0) {
+            binding.tvNoReg.visibility = View.VISIBLE
+        }
+        adapter.notifyItemRemoved(position)
     }
 
     override fun onResume() {

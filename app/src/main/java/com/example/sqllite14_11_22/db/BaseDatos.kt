@@ -105,4 +105,16 @@ class BaseDatos(c: Context): SQLiteOpenHelper(c, DATABASE, null, VERSION) {
         //Devolvemos un boolean dependiendo si filas es distinto de 0
         return filas != 0
     }
+
+    //Metodo para borrar un dato de la base de datos
+    fun borrar(id: Int) {
+        //Creamos el query
+        val q = "DELETE FROM $TABLA WHERE id = '$id'"
+        //Activamos la escritura
+        val conexion = this.writableDatabase
+        //Ejecutamos sql
+        conexion.execSQL(q)
+        //Y cerramos la conexion
+        conexion.close()
+    }
 }
