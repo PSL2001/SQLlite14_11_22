@@ -83,9 +83,10 @@ class BaseDatos(c: Context): SQLiteOpenHelper(c, DATABASE, null, VERSION) {
     }
 
     //Metodo para comprobar que email es unico
-    fun existeEmail(email: String): Boolean {
-        //Creamos el query
-        val q = "SELECT id from $TABLA WHERE email ='$email'"
+    fun existeEmail(email: String, id: Int?): Boolean {
+        //Creamos el query, que cambiara dependiendo si el id es nulo o no
+        val q = if ( id == null) "SELECT id from $TABLA WHERE email ='$email'" else
+            "SELECT id from $TABLA WHERE email ='$email' AND id!=$id"
         // Creamos la conexion
         val conexion = this.readableDatabase
         //Creamos una variable para contar las filas
@@ -107,7 +108,7 @@ class BaseDatos(c: Context): SQLiteOpenHelper(c, DATABASE, null, VERSION) {
     }
 
     //Metodo para borrar un dato de la base de datos
-    fun borrar(id: Int) {
+    fun borrar(id: Int?) {
         //Creamos el query
         val q = "DELETE FROM $TABLA WHERE id = '$id'"
         //Activamos la escritura
@@ -116,5 +117,19 @@ class BaseDatos(c: Context): SQLiteOpenHelper(c, DATABASE, null, VERSION) {
         conexion.execSQL(q)
         //Y cerramos la conexion
         conexion.close()
+    }
+
+    //Metodo para actualizar un resgistro
+    fun update(usuario: Usuarios): Int {
+        //Se puede hacer como en el delete, pero habria problemas de seguridad de inyeccion SQL
+        //val q = "UPDATE $TABLA SET nombre = '${usuario.nombre}', email = '${usuario.email}' WHERE id = $'{usuario.id}' "
+        val conexion = this.writableDatabase
+        val valores = ContentValues().apply {
+            put("NOMBRE", usuario.nombre)
+            put("EMAIL", usuario.email)
+        }
+        val update = conexion.update(TABLA, valores, "id = ?", arrayOf(usuario.id.toString()))
+        conexion.close()
+        return update
     }
 }

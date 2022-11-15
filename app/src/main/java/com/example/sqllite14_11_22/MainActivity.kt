@@ -42,8 +42,16 @@ class MainActivity : AppCompatActivity() {
         binding.rcUsuarios.layoutManager = layoutmanager
         //Pasamos una funcion como parametro con itirador para poder borrar los datos de ese usuario cuando
         // el usuario pulse borrar
-        adapter = UsuariosAdapter(lista, {onItemDelete(it)})
+        adapter = UsuariosAdapter(lista, {onItemDelete(it)}, {onItemUpdate(it)})
         binding.rcUsuarios.adapter = adapter
+    }
+
+    private fun onItemUpdate(usuario: Usuarios) {
+        //Pasamos el usuario al activity updateCreate
+        val i = Intent(this, AddUpdateActivity::class.java).apply {
+            putExtra("USUARIO", usuario)
+        }
+        startActivity(i)
     }
 
     private fun onItemDelete(position: Int) {

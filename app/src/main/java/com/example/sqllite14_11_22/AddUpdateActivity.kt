@@ -1,5 +1,6 @@
 package com.example.sqllite14_11_22
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
@@ -12,12 +13,29 @@ class AddUpdateActivity : AppCompatActivity() {
     var nombre = ""
     var email = ""
     lateinit var conexion: BaseDatos
+    var editar = false
+    var id: Int? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAddUpdateBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setListeners()
         conexion = BaseDatos(this)
+        cogerDatos()
+        setListeners()
+
+    }
+
+    private fun cogerDatos() {
+        val datos = intent.extras
+        if (datos != null) {
+            editar = true
+            binding.btnEnviar.text = "EDITAR"
+            val usuario = datos.getSerializable("USUARIO") as Usuarios
+            id = usuario.id
+            binding.etNombre.setText(usuario.nombre)
+            binding.etEmail.setText(usuario.email)
+        }
     }
 
     private fun setListeners() {
@@ -45,16 +63,26 @@ class AddUpdateActivity : AppCompatActivity() {
             return
         }
         //Comprobamos que el email no esta duplicado
-        if (conexion.existeEmail(email)) {
+        if (conexion.existeEmail(email, id)) {
             binding.etEmail.setError("Este correo ya existe")
             binding.etEmail.requestFocus()
             return
         }
-        val usuario = Usuarios(1, nombre, email)
-        if (conexion.crear(usuario) > -1) {
-            finish()
+        if (!editar) {
+            val usuario = Usuarios(1, nombre, email)
+            if (conexion.crear(usuario) > -1) {
+                finish()
+            } else {
+                Toast.makeText(this, "No se ha podido guardar el registro", Toast.LENGTH_SHORT).show()
+            }
         } else {
-            Toast.makeText(this, "No se ha podido guardar el registro", Toast.LENGTH_SHORT).show()
+            val usuario = Usuarios(id, nombre, email)
+            if (conexion.update(usuario) > -1) {
+                finish()
+            } else {
+                Toast.makeText(this, "No se ha podido actualizar el usuario", Toast.LENGTH_SHORT).show()
+            }
         }
+
     }
 }

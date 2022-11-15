@@ -9,12 +9,17 @@ class UsuariosViewHolder(v: View): RecyclerView.ViewHolder(v) {
     private val binding = UsuarioLayoutBinding.bind(v)
 
     //Pasamos la funcion render onItemDelete
-    fun render(usuario: Usuarios, onItemDelete: (Int) -> Unit) {
+    fun render(usuario: Usuarios, onItemDelete: (Int) -> Unit, onItemUpdate: (Usuarios) -> Unit) {
         binding.tvId.text = usuario.id.toString()
         binding.tvNombre.text = usuario.nombre
         binding.tvEmail.text = usuario.email
+        //Listener del boton borrar
         binding.btnBorrar.setOnClickListener {
             onItemDelete(adapterPosition)
+        }
+        //Listener para el itemView
+        itemView.setOnClickListener {
+            onItemUpdate(usuario)
         }
     }
 }
