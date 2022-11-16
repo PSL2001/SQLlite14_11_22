@@ -132,4 +132,11 @@ class BaseDatos(c: Context): SQLiteOpenHelper(c, DATABASE, null, VERSION) {
         conexion.close()
         return update
     }
+
+    fun borrarTodo() {
+        val q="DELETE FROM $TABLA"
+        val conexion = this.writableDatabase
+        conexion.execSQL(q)
+        conexion.close()
+    }
 }

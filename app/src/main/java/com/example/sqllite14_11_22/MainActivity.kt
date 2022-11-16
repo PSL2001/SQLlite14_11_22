@@ -39,7 +39,10 @@ class MainActivity : AppCompatActivity() {
                 true
             }
             R.id.item_borrarTodo -> {
-
+                conexion.borrarTodo()
+                lista.clear()
+                adapter.notifyDataSetChanged()
+                binding.tvNoReg.visibility = View.VISIBLE
                 true
             }
             R.id.item_salir -> {
